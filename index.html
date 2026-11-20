@@ -1,0 +1,2290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <meta name="theme-color" content="#09090B" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <title>AURUM BULLION — Gold &amp; Silver Rates</title>
+  <style>
+    /* ==========================================================================
+       1. DESIGN TOKENS & RESET (100% Offline-Ready Luxury Dark & Gold Theme)
+       ========================================================================== */
+    :root {
+      --bg-obsidian: #09090B;
+      --bg-card: #141418;
+      --bg-card-elevated: #1B1B21;
+      --bg-input: #0F0F13;
+      --border-gold: rgba(212, 175, 55, 0.22);
+      --border-gold-strong: rgba(212, 175, 55, 0.5);
+      --border-silver: rgba(203, 213, 225, 0.22);
+      --border-subtle: rgba(255, 255, 255, 0.07);
+
+      --gold-primary: #D4AF37;
+      --gold-light: #F5D77F;
+      --gold-dark: #9A7B1C;
+      --gold-glow: rgba(212, 175, 55, 0.14);
+
+      --silver-primary: #CBD5E1;
+      --silver-light: #F1F5F9;
+      --silver-glow: rgba(203, 213, 225, 0.12);
+
+      --text-primary: #FAFAFA;
+      --text-secondary: #A1A1AA;
+      --text-muted: #71717A;
+
+      --green: #10B981;
+      --green-bg: rgba(16, 185, 129, 0.12);
+      --red: #EF4444;
+      --red-bg: rgba(239, 68, 68, 0.12);
+
+      --radius-sm: 10px;
+      --radius-md: 16px;
+      --radius-lg: 22px;
+      --radius-full: 9999px;
+
+      --nav-height: 70px;
+      --header-height: 68px;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      background-color: #050507;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 15px;
+      line-height: 1.45;
+      overflow-x: hidden;
+      min-height: 100%;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .tabular {
+      font-variant-numeric: tabular-nums;
+    }
+
+    /* ==========================================================================
+       2. NATIVE ANDROID APP SHELL
+       ========================================================================== */
+    .app-shell {
+      width: 100%;
+      max-width: 480px;
+      min-height: 100dvh;
+      margin: 0 auto;
+      background-color: var(--bg-obsidian);
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      box-shadow: 0 0 60px rgba(0, 0, 0, 0.85);
+      border-left: 1px solid rgba(255, 255, 255, 0.04);
+      border-right: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    /* Sticky Top Header */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      height: var(--header-height);
+      padding: 0 16px;
+      background: rgba(9, 9, 11, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-gold);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 11px;
+      min-width: 0;
+    }
+
+    .brand-emblem {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, rgba(245, 215, 127, 0.22), rgba(212, 175, 55, 0.06));
+      border: 1px solid var(--border-gold-strong);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.14);
+    }
+
+    .brand-text {
+      min-width: 0;
+    }
+
+    .brand-title {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      background: linear-gradient(90deg, var(--gold-light), var(--gold-primary));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .location-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      color: var(--text-secondary);
+      margin-top: 1px;
+    }
+
+    .live-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background-color: var(--green);
+      box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+      animation: pulse-dot 2s infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse-dot {
+      0% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+      70% { box-shadow: 0 0 0 7px rgba(16, 185, 129, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .icon-btn {
+      width: 44px;
+      height: 44px;
+      border-radius: 13px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.2s ease, border-color 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .icon-btn:active {
+      transform: scale(0.93);
+      background: var(--bg-card-elevated);
+    }
+
+    .icon-btn.spinning svg {
+      animation: spin 0.9s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
+
+    /* Main Scrollable Content */
+    .app-content {
+      flex: 1;
+      padding: 16px 16px calc(var(--nav-height) + 28px);
+      overflow-y: auto;
+    }
+
+    .tab-panel {
+      display: none;
+      animation: fadeSlideUp 0.24s ease-out;
+    }
+
+    .tab-panel.active {
+      display: block;
+    }
+
+    @keyframes fadeSlideUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ==========================================================================
+       3. SHARED CARDS, CONTROLS, BUTTONS & SWITCHES
+       ========================================================================== */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-md);
+      padding: 16px;
+      margin-bottom: 14px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .card-silver {
+      border-color: var(--border-silver);
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Status & Live Fetch Strip */
+    .status-strip {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1), rgba(20, 20, 24, 0.9));
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-md);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+
+    .status-info {
+      min-width: 0;
+    }
+
+    .status-source {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--gold-light);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-time {
+      font-size: 11px;
+      color: var(--text-secondary);
+      margin-top: 2px;
+    }
+
+    .btn-spot {
+      min-height: 44px;
+      padding: 0 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border-gold-strong);
+      background: linear-gradient(135deg, #D4AF37, #B58F22);
+      color: #09090B;
+      font-size: 12.5px;
+      font-weight: 800;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+      transition: transform 0.15s ease, opacity 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .btn-spot:active {
+      transform: scale(0.96);
+    }
+
+    .btn-spot:disabled {
+      opacity: 0.65;
+      cursor: not-allowed;
+    }
+
+    /* Weight Unit Switcher Pills & GST Row */
+    .controls-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .pill-group {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      background: var(--bg-card);
+      padding: 5px;
+      border-radius: 14px;
+      border: 1px solid var(--border-subtle);
+    }
+
+    .pill-btn {
+      min-height: 44px;
+      border-radius: 10px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      line-height: 1.15;
+    }
+
+    .pill-btn span.sub {
+      font-size: 9.5px;
+      font-weight: 500;
+      opacity: 0.68;
+      margin-top: 2px;
+    }
+
+    .pill-btn.active {
+      background: linear-gradient(135deg, rgba(245, 215, 127, 0.22), rgba(212, 175, 55, 0.14));
+      color: var(--gold-light);
+      box-shadow: inset 0 0 0 1px var(--border-gold-strong);
+    }
+
+    /* Toggle Switch Row */
+    .toggle-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 14px;
+      padding: 10px 14px;
+      min-height: 52px;
+    }
+
+    .toggle-label {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .toggle-label strong {
+      font-size: 13.5px;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .toggle-label small {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 50px;
+      height: 28px;
+      flex-shrink: 0;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      inset: 0;
+      background-color: #27272E;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: var(--radius-full);
+      transition: 0.25s ease;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 20px;
+      width: 20px;
+      left: 3px;
+      bottom: 3px;
+      background-color: #A1A1AA;
+      border-radius: 50%;
+      transition: 0.25s ease;
+    }
+
+    .switch input:checked + .slider {
+      background: linear-gradient(135deg, var(--gold-primary), var(--gold-dark));
+      border-color: var(--gold-light);
+    }
+
+    .switch input:checked + .slider:before {
+      transform: translateX(22px);
+      background-color: #09090B;
+    }
+
+    /* ==========================================================================
+       4. RATE CARDS
+       ========================================================================== */
+    .rate-card {
+      background: linear-gradient(160deg, #17171C 0%, #111115 100%);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 16px 18px;
+      margin-bottom: 12px;
+      cursor: pointer;
+      transition: transform 0.15s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .rate-card::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 4px;
+      height: 100%;
+      background: linear-gradient(180deg, var(--gold-light), var(--gold-primary));
+    }
+
+    .rate-card.silver-card {
+      border-color: var(--border-silver);
+      background: linear-gradient(160deg, #16181E 0%, #101216 100%);
+    }
+
+    .rate-card.silver-card::before {
+      background: linear-gradient(180deg, var(--silver-light), #94A3B8);
+    }
+
+    .rate-card:active {
+      transform: scale(0.985);
+    }
+
+    .rate-card-top {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 12px;
+    }
+
+    .metal-meta {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .metal-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 13px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      flex-shrink: 0;
+    }
+
+    .metal-icon.gold {
+      background: linear-gradient(135deg, rgba(245, 215, 127, 0.22), rgba(212, 175, 55, 0.08));
+      border: 1px solid var(--border-gold-strong);
+      color: var(--gold-light);
+    }
+
+    .metal-icon.silver {
+      background: linear-gradient(135deg, rgba(241, 245, 249, 0.2), rgba(203, 213, 225, 0.07));
+      border: 1px solid rgba(203, 213, 225, 0.45);
+      color: var(--silver-light);
+    }
+
+    .metal-name {
+      font-size: 15.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .purity-badge {
+      display: inline-block;
+      font-size: 10.5px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+      margin-top: 2px;
+      letter-spacing: 0.04em;
+    }
+
+    .purity-badge.gold {
+      background: var(--gold-glow);
+      color: var(--gold-light);
+      border: 1px solid rgba(212, 175, 55, 0.28);
+    }
+
+    .purity-badge.silver {
+      background: var(--silver-glow);
+      color: var(--silver-primary);
+      border: 1px solid rgba(203, 213, 225, 0.28);
+    }
+
+    .unit-tag {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--text-secondary);
+      background: rgba(255, 255, 255, 0.05);
+      padding: 4px 9px;
+      border-radius: 8px;
+      border: 1px solid var(--border-subtle);
+      white-space: nowrap;
+    }
+
+    .rate-card-bottom {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .price-main {
+      font-size: 27px;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--text-primary);
+      line-height: 1.1;
+    }
+
+    .price-main.gold-text {
+      color: var(--gold-light);
+    }
+
+    .price-main.silver-text {
+      color: var(--silver-light);
+    }
+
+    .price-sub {
+      font-size: 11.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .change-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 12px;
+      font-weight: 700;
+      padding: 5px 9px;
+      border-radius: 9px;
+      white-space: nowrap;
+    }
+
+    .change-pill.down {
+      background: var(--red-bg);
+      color: #FCA5A5;
+      border: 1px solid rgba(239, 68, 68, 0.25);
+    }
+
+    .change-pill.up {
+      background: var(--green-bg);
+      color: #6EE7B7;
+      border: 1px solid rgba(16, 185, 129, 0.25);
+    }
+
+    .change-pill.flat {
+      background: rgba(161, 161, 170, 0.12);
+      color: var(--text-secondary);
+      border: 1px solid rgba(161, 161, 170, 0.2);
+    }
+
+    /* ==========================================================================
+       5. CALCULATOR TAB
+       ========================================================================== */
+    .metal-selector-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .metal-select-btn {
+      min-height: 54px;
+      padding: 10px 12px;
+      border-radius: 13px;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      text-align: left;
+      cursor: pointer;
+      transition: all 0.18s ease;
+    }
+
+    .metal-select-btn strong {
+      display: block;
+      font-size: 13.5px;
+      color: var(--text-primary);
+    }
+
+    .metal-select-btn span {
+      font-size: 11.5px;
+      color: var(--text-muted);
+    }
+
+    .metal-select-btn.active {
+      background: rgba(212, 175, 55, 0.13);
+      border-color: var(--gold-primary);
+      box-shadow: 0 0 0 1px rgba(212, 175, 55, 0.25);
+    }
+
+    .metal-select-btn.active strong {
+      color: var(--gold-light);
+    }
+
+    .metal-select-btn.active.is-silver {
+      background: rgba(203, 213, 225, 0.12);
+      border-color: var(--silver-primary);
+      box-shadow: 0 0 0 1px rgba(203, 213, 225, 0.22);
+    }
+
+    .metal-select-btn.active.is-silver strong {
+      color: var(--silver-light);
+    }
+
+    .input-group {
+      margin-bottom: 14px;
+    }
+
+    .input-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .text-input {
+      width: 100%;
+      min-height: 48px;
+      background: var(--bg-input);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 12px;
+      padding: 10px 14px;
+      color: var(--text-primary);
+      font-size: 16px;
+      font-weight: 700;
+      font-family: var(--font-sans);
+      outline: none;
+      transition: border-color 0.2s ease;
+    }
+
+    .text-input:focus {
+      border-color: var(--gold-primary);
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 9px;
+    }
+
+    .chip-btn {
+      min-height: 36px;
+      padding: 0 13px;
+      border-radius: 10px;
+      background: var(--bg-card-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .chip-btn:active, .chip-btn.active {
+      background: var(--gold-glow);
+      border-color: var(--border-gold-strong);
+      color: var(--gold-light);
+    }
+
+    .segmented-mini {
+      display: inline-flex;
+      background: var(--bg-input);
+      border: 1px solid var(--border-subtle);
+      border-radius: 9px;
+      padding: 2px;
+    }
+
+    .segmented-mini button {
+      min-height: 30px;
+      padding: 0 11px;
+      border: none;
+      border-radius: 7px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .segmented-mini button.active {
+      background: var(--gold-primary);
+      color: #09090B;
+    }
+
+    .range-slider {
+      width: 100%;
+      margin-top: 10px;
+      accent-color: var(--gold-primary);
+      height: 6px;
+      cursor: pointer;
+    }
+
+    /* Invoice Breakdown Card */
+    .invoice-card {
+      background: linear-gradient(165deg, #19181D 0%, #111115 100%);
+      border: 1px solid var(--border-gold-strong);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      margin-top: 14px;
+    }
+
+    .invoice-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px dashed rgba(212, 175, 55, 0.28);
+    }
+
+    .invoice-title {
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+    }
+
+    .invoice-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 7px 0;
+      font-size: 14px;
+      color: var(--text-secondary);
+    }
+
+    .invoice-row span:last-child {
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .invoice-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.09);
+      margin: 10px 0;
+    }
+
+    .invoice-total {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      padding-top: 4px;
+    }
+
+    .invoice-total .label {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+
+    .invoice-total .amount {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--gold-light);
+      letter-spacing: -0.02em;
+    }
+
+    .btn-outline {
+      width: 100%;
+      min-height: 46px;
+      margin-top: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border-gold-strong);
+      background: rgba(212, 175, 55, 0.08);
+      color: var(--gold-light);
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: background-color 0.2s ease, transform 0.15s ease;
+    }
+
+    .btn-outline:active {
+      transform: scale(0.98);
+      background: rgba(212, 175, 55, 0.16);
+    }
+
+    /* ==========================================================================
+       6. TRENDS TAB (Pure Offline SVG Chart & History Table)
+       ========================================================================== */
+    .trend-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 7px;
+      background: var(--bg-card);
+      padding: 5px;
+      border-radius: 14px;
+      border: 1px solid var(--border-subtle);
+      margin-bottom: 14px;
+    }
+
+    .trend-tab-btn {
+      min-height: 44px;
+      border: none;
+      border-radius: 10px;
+      background: transparent;
+      color: var(--text-secondary);
+      font-size: 12.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .trend-tab-btn.active {
+      background: linear-gradient(135deg, rgba(245, 215, 127, 0.22), rgba(212, 175, 55, 0.14));
+      color: var(--gold-light);
+      box-shadow: inset 0 0 0 1px var(--border-gold-strong);
+    }
+
+    .trend-tab-btn.active.silver-tab {
+      background: linear-gradient(135deg, rgba(241, 245, 249, 0.2), rgba(203, 213, 225, 0.1));
+      color: var(--silver-light);
+      box-shadow: inset 0 0 0 1px rgba(203, 213, 225, 0.45);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .stat-box {
+      background: var(--bg-card);
+      border: 1px solid var(--border-subtle);
+      border-radius: 13px;
+      padding: 10px;
+    }
+
+    .stat-box small {
+      display: block;
+      font-size: 10.5px;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      margin-bottom: 3px;
+    }
+
+    .stat-box strong {
+      font-size: 13.5px;
+      font-weight: 800;
+      color: var(--text-primary);
+    }
+
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-gold);
+      border-radius: var(--radius-lg);
+      padding: 16px 14px 12px;
+      margin-bottom: 14px;
+    }
+
+    .chart-readout {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      margin-bottom: 10px;
+      min-height: 28px;
+    }
+
+    .chart-readout-price {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--gold-light);
+    }
+
+    .chart-readout-date {
+      font-size: 12px;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+
+    .svg-chart-wrap {
+      width: 100%;
+      position: relative;
+      touch-action: pan-y;
+    }
+
+    .svg-chart-wrap svg {
+      width: 100%;
+      height: auto;
+      display: block;
+      overflow: visible;
+    }
+
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .history-table th {
+      text-align: left;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      padding: 0 6px 10px;
+      border-bottom: 1px solid var(--border-subtle);
+    }
+
+    .history-table th:nth-child(2),
+    .history-table td:nth-child(2),
+    .history-table th:nth-child(3),
+    .history-table td:nth-child(3) {
+      text-align: right;
+    }
+
+    .history-table td {
+      padding: 11px 6px;
+      font-size: 13.5px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    }
+
+    .history-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    /* ==========================================================================
+       7. SETTINGS TAB
+       ========================================================================== */
+    .btn-primary {
+      width: 100%;
+      min-height: 48px;
+      border: none;
+      border-radius: 13px;
+      background: linear-gradient(135deg, var(--gold-light), var(--gold-primary));
+      color: #09090B;
+      font-size: 14.5px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform 0.15s ease, opacity 0.2s ease;
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-danger-outline {
+      width: 100%;
+      min-height: 46px;
+      margin-top: 10px;
+      border-radius: 13px;
+      border: 1px solid rgba(239, 68, 68, 0.35);
+      background: rgba(239, 68, 68, 0.08);
+      color: #FCA5A5;
+      font-size: 13.5px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s ease, background-color 0.2s ease;
+    }
+
+    .btn-danger-outline:active {
+      transform: scale(0.98);
+      background: rgba(239, 68, 68, 0.16);
+    }
+
+    .settings-grid-2 {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    /* ==========================================================================
+       8. FIXED ANDROID BOTTOM NAVIGATION BAR & TOAST
+       ========================================================================== */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 480px;
+      height: var(--nav-height);
+      background: rgba(14, 14, 18, 0.94);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      border-top: 1px solid var(--border-gold);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 6px 8px env(safe-area-inset-bottom, 6px);
+      z-index: 50;
+    }
+
+    .nav-item {
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      cursor: pointer;
+      border-radius: 14px;
+      min-height: 48px;
+      transition: color 0.2s ease;
+      position: relative;
+    }
+
+    .nav-icon-pill {
+      width: 48px;
+      height: 30px;
+      border-radius: var(--radius-full);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.2s ease, transform 0.15s ease;
+    }
+
+    .nav-item span {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+    }
+
+    .nav-item.active {
+      color: var(--gold-light);
+    }
+
+    .nav-item.active .nav-icon-pill {
+      background: rgba(212, 175, 55, 0.18);
+    }
+
+    .nav-item:active .nav-icon-pill {
+      transform: scale(0.92);
+    }
+
+    /* Toast Notification (Replaces alert) */
+    .toast {
+      position: fixed;
+      left: 50%;
+      bottom: calc(var(--nav-height) + 16px);
+      transform: translateX(-50%) translateY(20px);
+      width: calc(100% - 32px);
+      max-width: 440px;
+      background: #1C1C23;
+      border: 1px solid var(--border-gold-strong);
+      color: var(--text-primary);
+      padding: 12px 16px;
+      border-radius: 14px;
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease, transform 0.25s ease;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    .toast-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--gold-light);
+      flex-shrink: 0;
+    }
+
+    .toast.success .toast-dot { background: var(--green); }
+    .toast.error .toast-dot { background: var(--red); }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <!-- ======================================================================
+         STICKY ANDROID APP HEADER
+         ====================================================================== -->
+    <header class="app-header">
+      <div class="brand-group">
+        <div class="brand-emblem" aria-hidden="true">
+          <!-- Gold Ingot / Bullion SVG Icon -->
+          <svg width="21" height="21" viewBox="0 0 24 24" fill="none" stroke="#F5D77F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M6 15L8.5 9H15.5L18 15H6Z" fill="rgba(212,175,55,0.28)"></path>
+            <path d="M3 20L5.5 15H18.5L21 20H3Z"></path>
+            <path d="M12 3V5.5"></path>
+            <path d="M6.5 5.5L8 7"></path>
+            <path d="M17.5 5.5L16 7"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title" id="headerAppTitle">AURUM BULLION</div>
+          <div class="location-badge">
+            <span class="live-dot" id="liveDot"></span>
+            <span id="headerCity">Cuttack, Odisha</span>
+          </div>
+        </div>
+      </div>
+
+      <button class="icon-btn" id="headerRefreshBtn" title="Refresh Live Spot Rates" aria-label="Refresh Rates">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+          <path d="M3 3v5h5"></path>
+          <path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path>
+          <path d="M16 16h5v5"></path>
+        </svg>
+      </button>
+    </header>
+
+    <!-- ======================================================================
+         MAIN SCROLLABLE VIEWPORT
+         ====================================================================== -->
+    <main class="app-content">
+
+      <!-- ==================== TAB 1: LIVE RATES ==================== -->
+      <section class="tab-panel active" id="tab-rates" aria-label="Bullion Rates">
+        <!-- Market Source & Live Spot Fetch Banner -->
+        <div class="status-strip">
+          <div class="status-info">
+            <div class="status-source" id="rateSourceLabel">Cuttack Bullion Baseline</div>
+            <div class="status-time" id="rateUpdatedLabel">Updated: 20 Nov 2026</div>
+          </div>
+          <button class="btn-spot" id="fetchSpotBtn">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="2" y1="12" x2="22" y2="12"></line>
+              <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+            </svg>
+            <span>Fetch Live Spot</span>
+          </button>
+        </div>
+
+        <!-- Weight Unit Switcher + 3% GST Toggle -->
+        <div class="controls-bar">
+          <div class="pill-group" id="weightPills" role="tablist" aria-label="Weight unit selector">
+            <button class="pill-btn active" data-unit="1">
+              <span>1g</span>
+              <span class="sub">Ag: 1g</span>
+            </button>
+            <button class="pill-btn" data-unit="8">
+              <span>8g</span>
+              <span class="sub">Ag: 10g</span>
+            </button>
+            <button class="pill-btn" data-unit="10">
+              <span>10g</span>
+              <span class="sub">Ag: 100g</span>
+            </button>
+            <button class="pill-btn" data-unit="100">
+              <span>100g</span>
+              <span class="sub">Ag: 1kg</span>
+            </button>
+          </div>
+
+          <div class="toggle-row">
+            <div class="toggle-label">
+              <strong>Include 3% GST</strong>
+              <small>Standard Indian bullion &amp; jewellery tax</small>
+            </div>
+            <label class="switch" aria-label="Include 3% GST">
+              <input type="checkbox" id="ratesGstToggle" />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Rate Cards Container (Rendered Dynamically) -->
+        <div id="rateCardsContainer"></div>
+
+        <p style="font-size: 11.5px; color: var(--text-muted); text-align: center; margin-top: 8px;">
+          Tap any metal card to open it in the Jewellery Calculator.
+        </p>
+      </section>
+
+      <!-- ==================== TAB 2: CALCULATOR ==================== -->
+      <section class="tab-panel" id="tab-calculator" aria-label="Jewellery & Bullion Calculator">
+        <div class="section-label">
+          <span>Select Metal Purity</span>
+          <span style="color: var(--gold-light);" id="calcActiveRateBadge">₹12,557 / g</span>
+        </div>
+
+        <div class="metal-selector-grid" id="calcMetalGrid">
+          <!-- Rendered dynamically -->
+        </div>
+
+        <div class="card">
+          <!-- Weight Input -->
+          <div class="input-group">
+            <div class="input-label-row">
+              <label for="calcWeightInput">Weight (grams)</label>
+              <span style="color: var(--gold-light); font-size: 12px;" id="calcWeightHint">10.00 g</span>
+            </div>
+            <input type="number" id="calcWeightInput" class="text-input tabular" value="10" min="0.1" step="0.1" inputmode="decimal" />
+            <div class="chip-row" id="weightPresetChips">
+              <button type="button" class="chip-btn" data-weight="1">1g</button>
+              <button type="button" class="chip-btn" data-weight="5">5g</button>
+              <button type="button" class="chip-btn active" data-weight="10">10g</button>
+              <button type="button" class="chip-btn" data-weight="20">20g</button>
+              <button type="button" class="chip-btn" data-weight="50">50g</button>
+            </div>
+          </div>
+
+          <!-- Making Charges -->
+          <div class="input-group" style="margin-bottom: 14px;">
+            <div class="input-label-row">
+              <label for="calcMakingInput">Making Charges</label>
+              <div class="segmented-mini" id="makingModeToggle">
+                <button type="button" class="active" data-mode="percent">%</button>
+                <button type="button" data-mode="flat">₹/g</button>
+              </div>
+            </div>
+            <input type="number" id="calcMakingInput" class="text-input tabular" value="10" min="0" step="0.5" inputmode="decimal" />
+            <input type="range" id="calcMakingSlider" class="range-slider" min="0" max="35" step="0.5" value="10" />
+          </div>
+
+          <!-- GST Switch -->
+          <div class="toggle-row" style="background: var(--bg-input);">
+            <div class="toggle-label">
+              <strong>Apply 3% GST</strong>
+              <small>Calculated on Metal Value + Making</small>
+            </div>
+            <label class="switch" aria-label="Apply 3% GST in Calculator">
+              <input type="checkbox" id="calcGstToggle" checked />
+              <span class="slider"></span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Itemized Invoice Breakdown -->
+        <div class="invoice-card">
+          <div class="invoice-header">
+            <span class="invoice-title">Estimated Bill Breakdown</span>
+            <span style="font-size: 11.5px; color: var(--text-secondary);" id="invoiceMetalTag">24K Gold • 10g</span>
+          </div>
+
+          <div class="invoice-row">
+            <span id="invoiceBaseLabel">Base Metal Value (10g × ₹12,557)</span>
+            <span class="tabular" id="invoiceBaseVal">₹1,25,570</span>
+          </div>
+          <div class="invoice-row">
+            <span id="invoiceMakingLabel">Making Charges (10%)</span>
+            <span class="tabular" id="invoiceMakingVal">₹12,557</span>
+          </div>
+          <div class="invoice-row">
+            <span id="invoiceGstLabel">GST (3%)</span>
+            <span class="tabular" id="invoiceGstVal">₹4,144</span>
+          </div>
+
+          <div class="invoice-divider"></div>
+
+          <div class="invoice-total">
+            <span class="label">Grand Total</span>
+            <span class="amount tabular" id="invoiceGrandTotal">₹1,42,271</span>
+          </div>
+
+          <button type="button" class="btn-outline" id="copyEstimateBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            <span>Copy Estimate Quote</span>
+          </button>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 3: 10-DAY TRENDS ==================== -->
+      <section class="tab-panel" id="tab-trends" aria-label="10-Day Price Trends">
+        <div class="trend-tabs" id="trendMetalTabs">
+          <button type="button" class="trend-tab-btn active" data-trend="gold24">24K Gold (1g)</button>
+          <button type="button" class="trend-tab-btn" data-trend="gold22">22K Gold (1g)</button>
+          <button type="button" class="trend-tab-btn" data-trend="silverKg">Silver (1kg)</button>
+        </div>
+
+        <!-- High / Low / 10D Change Stats -->
+        <div class="stats-grid">
+          <div class="stat-box">
+            <small>10D High</small>
+            <strong class="tabular" id="trendHighVal">—</strong>
+          </div>
+          <div class="stat-box">
+            <small>10D Low</small>
+            <strong class="tabular" id="trendLowVal">—</strong>
+          </div>
+          <div class="stat-box">
+            <small>10D Change</small>
+            <strong class="tabular" id="trendNetChange">—</strong>
+          </div>
+        </div>
+
+        <!-- Pure Offline Interactive SVG Line Chart -->
+        <div class="chart-card" id="trendChartCard">
+          <div class="chart-readout">
+            <div>
+              <div class="chart-readout-price tabular" id="chartSelectedPrice">₹12,557</div>
+              <div style="font-size: 11px; color: var(--text-muted);" id="chartSelectedDelta">Tap or drag points to inspect</div>
+            </div>
+            <div class="chart-readout-date" id="chartSelectedDate">20 Nov 2026</div>
+          </div>
+          <div class="svg-chart-wrap" id="svgChartContainer"></div>
+        </div>
+
+        <!-- 10-Day Historical Rate Table -->
+        <div class="card">
+          <div class="section-label">
+            <span>10-Day Historical Rates</span>
+            <span style="color: var(--text-secondary);">Cuttack Market</span>
+          </div>
+          <table class="history-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Rate (INR)</th>
+                <th>Change</th>
+              </tr>
+            </thead>
+            <tbody id="historyTableBody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ==================== TAB 4: SETTINGS & DEALER MODE ==================== -->
+      <section class="tab-panel" id="tab-settings" aria-label="App & Dealer Settings">
+        <div class="card">
+          <div class="section-label">
+            <span>Store &amp; Location Branding</span>
+            <span style="color: var(--gold-light);">Dealer Mode</span>
+          </div>
+          <p style="font-size: 12.5px; color: var(--text-secondary); margin-bottom: 14px;">
+            Customize the header branding and override daily bullion rates with your own showroom prices. Saved locally on your phone.
+          </p>
+
+          <div class="input-group">
+            <div class="input-label-row"><label for="setAppName">App / Store Name</label></div>
+            <input type="text" id="setAppName" class="text-input" placeholder="AURUM BULLION" maxlength="28" />
+          </div>
+
+          <div class="input-group" style="margin-bottom: 0;">
+            <div class="input-label-row"><label for="setCityName">City / Location Label</label></div>
+            <input type="text" id="setCityName" class="text-input" placeholder="Cuttack, Odisha" maxlength="32" />
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="section-label">
+            <span>Custom Per-Gram Rates (INR)</span>
+            <span style="color: var(--text-muted);">1g Base</span>
+          </div>
+
+          <div class="settings-grid-2">
+            <div class="input-group">
+              <div class="input-label-row"><label for="setGold24">24K Gold (999)</label></div>
+              <input type="number" id="setGold24" class="text-input tabular" step="1" min="1" inputmode="numeric" />
+            </div>
+            <div class="input-group">
+              <div class="input-label-row"><label for="setGold22">22K Gold (916)</label></div>
+              <input type="number" id="setGold22" class="text-input tabular" step="1" min="1" inputmode="numeric" />
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <div class="input-label-row"><label for="setGold18">18K Gold (750)</label></div>
+              <input type="number" id="setGold18" class="text-input tabular" step="1" min="1" inputmode="numeric" />
+            </div>
+            <div class="input-group" style="margin-bottom: 0;">
+              <div class="input-label-row"><label for="setSilver">999 Silver (1g)</label></div>
+              <input type="number" id="setSilver" class="text-input tabular" step="0.5" min="1" inputmode="decimal" />
+            </div>
+          </div>
+
+          <div style="margin-top: 16px;">
+            <button type="button" class="btn-primary" id="saveSettingsBtn">Save Custom Rates &amp; Branding</button>
+            <button type="button" class="btn-danger-outline" id="resetSettingsBtn">Reset to Market Rates</button>
+          </div>
+        </div>
+
+        <div class="card" style="border-color: var(--border-subtle);">
+          <div class="section-label"><span>Offline APK Readiness</span></div>
+          <p style="font-size: 12px; color: var(--text-secondary); line-height: 1.55;">
+            This app runs with zero external libraries and stores your preferences offline in <code style="color: var(--gold-light);">localStorage</code>. Tap <strong>Fetch Live Spot</strong> on the Rates tab anytime you are online to sync international XAU/XAG spot prices into INR.
+          </p>
+        </div>
+      </section>
+    </main>
+
+    <!-- ======================================================================
+         ANDROID BOTTOM NAVIGATION BAR (4 TABS)
+         ====================================================================== -->
+    <nav class="bottom-nav" aria-label="Main Navigation">
+      <button class="nav-item active" data-tab="rates" aria-label="Rates">
+        <div class="nav-icon-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+          </svg>
+        </div>
+        <span>Rates</span>
+      </button>
+
+      <button class="nav-item" data-tab="calculator" aria-label="Calculator">
+        <div class="nav-icon-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="4" y="2" width="16" height="20" rx="2"></rect>
+            <line x1="8" y1="6" x2="16" y2="6"></line>
+            <line x1="8" y1="10" x2="8" y2="10.01"></line>
+            <line x1="12" y1="10" x2="12" y2="10.01"></line>
+            <line x1="16" y1="10" x2="16" y2="10.01"></line>
+            <line x1="8" y1="14" x2="8" y2="14.01"></line>
+            <line x1="12" y1="14" x2="12" y2="14.01"></line>
+            <line x1="16" y1="14" x2="16" y2="14.01"></line>
+            <line x1="8" y1="18" x2="12" y2="18"></line>
+            <line x1="16" y1="18" x2="16" y2="18.01"></line>
+          </svg>
+        </div>
+        <span>Calculator</span>
+      </button>
+
+      <button class="nav-item" data-tab="trends" aria-label="Trends">
+        <div class="nav-icon-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <polyline points="22 7 13.5 15.5 8.5 10.5 2 17"></polyline>
+            <polyline points="16 7 22 7 22 13"></polyline>
+          </svg>
+        </div>
+        <span>Trends</span>
+      </button>
+
+      <button class="nav-item" data-tab="settings" aria-label="Settings">
+        <div class="nav-icon-pill">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </div>
+        <span>Settings</span>
+      </button>
+    </nav>
+
+    <!-- Custom Toast Notification -->
+    <div class="toast" id="toast" role="status" aria-live="polite">
+      <span class="toast-dot"></span>
+      <span id="toastMessage">Ready</span>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       APPLICATION LOGIC (100% SELF-CONTAINED VANILLA JAVASCRIPT)
+       ======================================================================== -->
+  <script>
+    (function () {
+      'use strict';
+
+      /* ----------------------------------------------------------------------
+         1. DEFAULT MARKET BASELINE (Cuttack, Odisha — Nov 20, 2026)
+         ---------------------------------------------------------------------- */
+      const STORAGE_KEY = 'aurum_bullion_state_v1';
+
+      const DEFAULT_BASELINE = {
+        appName: 'AURUM BULLION',
+        cityName: 'Cuttack, Odisha',
+        sourceLabel: 'Cuttack Bullion Baseline',
+        updatedLabel: 'Updated: 20 Nov 2026',
+        rates: {
+          gold24: 12557,
+          gold22: 11510,
+          gold18: 9418,
+          silver: 175
+        },
+        changes: {
+          gold24: -512,
+          gold22: -470,
+          gold18: -384,
+          silver: -5
+        }
+      };
+
+      const HISTORICAL_DATA = {
+        dates: ['11 Nov', '12 Nov', '13 Nov', '14 Nov', '15 Nov', '16 Nov', '17 Nov', '18 Nov', '19 Nov', '20 Nov'],
+        gold24: [14198, 13980, 13735, 13762, 13762, 13680, 13604, 13326, 13069, 12557],
+        gold22: [13015, 12815, 12590, 12615, 12615, 12540, 12470, 12215, 11980, 11510],
+        silverKg: [200000, 200000, 195000, 195000, 195000, 190000, 190000, 185000, 180000, 175000]
+      };
+
+      // Maps Gold weight pill -> corresponding Silver display unit
+      const SILVER_UNIT_MAP = {
+        1: { mult: 1, label: '1g' },
+        8: { mult: 10, label: '10g' },
+        10: { mult: 100, label: '100g' },
+        100: { mult: 1000, label: '1kg' }
+      };
+
+      const METALS_META = [
+        { key: 'gold24', name: '24K Gold', short: '24K', purity: '999 Pure Bullion', type: 'gold' },
+        { key: 'gold22', name: '22K Gold', short: '22K', purity: '916 Hallmark', type: 'gold' },
+        { key: 'gold18', name: '18K Gold', short: '18K', purity: '750 Jewellery', type: 'gold' },
+        { key: 'silver', name: '999 Fine Silver', short: 'Ag', purity: '999 Pure Silver', type: 'silver' }
+      ];
+
+      /* ----------------------------------------------------------------------
+         2. APPLICATION STATE
+         ---------------------------------------------------------------------- */
+      const state = {
+        activeTab: 'rates',
+        appName: DEFAULT_BASELINE.appName,
+        cityName: DEFAULT_BASELINE.cityName,
+        sourceLabel: DEFAULT_BASELINE.sourceLabel,
+        updatedLabel: DEFAULT_BASELINE.updatedLabel,
+        rates: { ...DEFAULT_BASELINE.rates },
+        changes: { ...DEFAULT_BASELINE.changes },
+
+        // Rates tab state
+        goldUnit: 1,
+        ratesIncludeGst: false,
+
+        // Calculator tab state
+        calcMetal: 'gold24',
+        calcWeight: 10,
+        calcMakingMode: 'percent', // 'percent' | 'flat'
+        calcMakingValue: 10,
+        calcIncludeGst: true,
+
+        // Trends tab state
+        trendKey: 'gold24',
+        selectedTrendIndex: 9 // Defaults to latest day (20 Nov)
+      };
+
+      /* ----------------------------------------------------------------------
+         3. UTILITY HELPERS (Indian Currency Formatting & Toast)
+         ---------------------------------------------------------------------- */
+      const inrFormatter = new Intl.NumberFormat('en-IN', {
+        maximumFractionDigits: 0
+      });
+
+      function formatINR(num) {
+        const rounded = Math.round(Number(num) || 0);
+        return '₹' + inrFormatter.format(rounded);
+      }
+
+      let toastTimer = null;
+      function showToast(message, type = 'info') {
+        const toastEl = document.getElementById('toast');
+        const msgEl = document.getElementById('toastMessage');
+        msgEl.textContent = message;
+        toastEl.className = 'toast show ' + type;
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          toastEl.classList.remove('show');
+        }, 3200);
+      }
+
+      function loadSavedState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const saved = JSON.parse(raw);
+          if (saved.appName) state.appName = saved.appName;
+          if (saved.cityName) state.cityName = saved.cityName;
+          if (saved.sourceLabel) state.sourceLabel = saved.sourceLabel;
+          if (saved.updatedLabel) state.updatedLabel = saved.updatedLabel;
+          if (saved.rates) {
+            state.rates = { ...state.rates, ...saved.rates };
+          }
+          if (saved.changes) {
+            state.changes = { ...state.changes, ...saved.changes };
+          }
+        } catch (err) {
+          console.warn('Could not read saved state:', err);
+        }
+      }
+
+      function persistState() {
+        try {
+          const payload = {
+            appName: state.appName,
+            cityName: state.cityName,
+            sourceLabel: state.sourceLabel,
+            updatedLabel: state.updatedLabel,
+            rates: state.rates,
+            changes: state.changes
+          };
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(payload));
+        } catch (err) {
+          console.warn('Could not save state:', err);
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         4. RENDER: HEADER & NAVIGATION
+         ---------------------------------------------------------------------- */
+      function renderHeader() {
+        document.getElementById('headerAppTitle').textContent = state.appName;
+        document.getElementById('headerCity').textContent = state.cityName;
+        document.getElementById('rateSourceLabel').textContent = state.sourceLabel;
+        document.getElementById('rateUpdatedLabel').textContent = state.updatedLabel;
+      }
+
+      function switchTab(tabName) {
+        state.activeTab = tabName;
+        document.querySelectorAll('.tab-panel').forEach((panel) => {
+          panel.classList.toggle('active', panel.id === 'tab-' + tabName);
+        });
+        document.querySelectorAll('.nav-item').forEach((btn) => {
+          btn.classList.toggle('active', btn.dataset.tab === tabName);
+        });
+
+        // Re-render active view to stay synced
+        if (tabName === 'rates') renderRatesTab();
+        if (tabName === 'calculator') renderCalculatorTab();
+        if (tabName === 'trends') renderTrendsTab();
+        if (tabName === 'settings') populateSettingsForm();
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      /* ----------------------------------------------------------------------
+         5. RENDER: RATES TAB
+         ---------------------------------------------------------------------- */
+      function renderRatesTab() {
+        renderHeader();
+        const container = document.getElementById('rateCardsContainer');
+        const gstFactor = state.ratesIncludeGst ? 1.03 : 1;
+        const silverUnit = SILVER_UNIT_MAP[state.goldUnit];
+
+        container.innerHTML = METALS_META.map((metal) => {
+          const isSilver = metal.type === 'silver';
+          const unitMult = isSilver ? silverUnit.mult : state.goldUnit;
+          const unitLabel = isSilver ? silverUnit.label : state.goldUnit + 'g';
+
+          const basePerGram = state.rates[metal.key];
+          const displayPrice = basePerGram * unitMult * gstFactor;
+          const dailyChange = (state.changes[metal.key] || 0) * unitMult;
+
+          let changeClass = 'flat';
+          let arrow = '•';
+          if (dailyChange > 0) {
+            changeClass = 'up';
+            arrow = '▲';
+          } else if (dailyChange < 0) {
+            changeClass = 'down';
+            arrow = '▼';
+          }
+
+          const absChangeFormatted = formatINR(Math.abs(dailyChange));
+          const subText = isSilver
+            ? `1kg: ${formatINR(basePerGram * 1000 * gstFactor)}${state.ratesIncludeGst ? ' (incl. GST)' : ''}`
+            : `1g: ${formatINR(basePerGram * gstFactor)}${state.ratesIncludeGst ? ' (incl. 3% GST)' : ''}`;
+
+          return `
+            <article class="rate-card ${isSilver ? 'silver-card' : ''}" data-open-calc="${metal.key}">
+              <div class="rate-card-top">
+                <div class="metal-meta">
+                  <div class="metal-icon ${metal.type}">${metal.short}</div>
+                  <div>
+                    <div class="metal-name">${metal.name}</div>
+                    <span class="purity-badge ${metal.type}">${metal.purity}</span>
+                  </div>
+                </div>
+                <span class="unit-tag">Per ${unitLabel}</span>
+              </div>
+              <div class="rate-card-bottom">
+                <div>
+                  <div class="price-main tabular ${isSilver ? 'silver-text' : 'gold-text'}">${formatINR(displayPrice)}</div>
+                  <div class="price-sub tabular">${subText}</div>
+                </div>
+                <div class="change-pill ${changeClass} tabular">
+                  <span>${arrow}</span>
+                  <span>${dailyChange === 0 ? '₹0' : absChangeFormatted}</span>
+                </div>
+              </div>
+            </article>
+          `;
+        }).join('');
+
+        // Bind quick jump to Calculator when tapping a rate card
+        container.querySelectorAll('.rate-card').forEach((card) => {
+          card.addEventListener('click', () => {
+            state.calcMetal = card.dataset.openCalc;
+            switchTab('calculator');
+          });
+        });
+      }
+
+      /* ----------------------------------------------------------------------
+         6. LIVE SPOT PRICE FETCHER (Graceful Offline Fallback)
+         ---------------------------------------------------------------------- */
+      async function fetchLiveSpotPrices() {
+        const spotBtn = document.getElementById('fetchSpotBtn');
+        const refreshBtn = document.getElementById('headerRefreshBtn');
+
+        spotBtn.disabled = true;
+        refreshBtn.classList.add('spinning');
+        spotBtn.querySelector('span').textContent = 'Syncing...';
+
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 7500);
+
+        try {
+          const [xauRes, xagRes, fxRes] = await Promise.all([
+            fetch('https://api.gold-api.com/price/XAU', { signal: controller.signal }),
+            fetch('https://api.gold-api.com/price/XAG', { signal: controller.signal }),
+            fetch('https://open.er-api.com/v6/latest/USD', { signal: controller.signal })
+          ]);
+
+          if (!xauRes.ok || !xagRes.ok || !fxRes.ok) {
+            throw new Error('Live API returned a non-OK status');
+          }
+
+          const [xauData, xagData, fxData] = await Promise.all([
+            xauRes.json(),
+            xagRes.json(),
+            fxRes.json()
+          ]);
+
+          const xauUsdPerOz = Number(xauData.price);
+          const xagUsdPerOz = Number(xagData.price);
+          const usdToInr = Number(fxData && fxData.rates && fxData.rates.INR);
+
+          if (!xauUsdPerOz || !xagUsdPerOz || !usdToInr) {
+            throw new Error('Incomplete spot price payload');
+          }
+
+          // Convert troy ounce (31.1034768g) to INR/g + Indian landed import duty & bullion premium (~6.5%)
+          const TROY_OZ_TO_GRAM = 31.1034768;
+          const INDIA_LANDED_FACTOR = 1.065;
+
+          const newGold24 = Math.round((xauUsdPerOz / TROY_OZ_TO_GRAM) * usdToInr * INDIA_LANDED_FACTOR);
+          const newGold22 = Math.round(newGold24 * (22 / 24));
+          const newGold18 = Math.round(newGold24 * (18 / 24));
+          const newSilver = Math.round(((xagUsdPerOz / TROY_OZ_TO_GRAM) * usdToInr * INDIA_LANDED_FACTOR) * 10) / 10;
+
+          // Calculate delta compared to previous day's historical baseline (19 Nov)
+          state.changes = {
+            gold24: newGold24 - HISTORICAL_DATA.gold24[8],
+            gold22: newGold22 - HISTORICAL_DATA.gold22[8],
+            gold18: newGold18 - Math.round(HISTORICAL_DATA.gold24[8] * 0.75),
+            silver: Math.round(newSilver - (HISTORICAL_DATA.silverKg[8] / 1000))
+          };
+
+          state.rates = {
+            gold24: newGold24,
+            gold22: newGold22,
+            gold18: newGold18,
+            silver: newSilver
+          };
+
+          const now = new Date();
+          const timeStr = now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit' });
+          state.sourceLabel = `Live Spot Est. (₹${usdToInr.toFixed(2)}/USD)`;
+          state.updatedLabel = `Synced Today at ${timeStr}`;
+
+          persistState();
+          renderRatesTab();
+          renderCalculatorTab();
+          showToast('Live international spot rates synced to INR!', 'success');
+        } catch (error) {
+          console.warn('Spot fetch fallback:', error);
+          showToast('Offline or API blocked — showing local Cuttack rates.', 'info');
+        } finally {
+          clearTimeout(timeoutId);
+          spotBtn.disabled = false;
+          refreshBtn.classList.remove('spinning');
+          spotBtn.querySelector('span').textContent = 'Fetch Live Spot';
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         7. RENDER: CALCULATOR TAB
+         ---------------------------------------------------------------------- */
+      function renderCalculatorTab() {
+        const grid = document.getElementById('calcMetalGrid');
+        grid.innerHTML = METALS_META.map((m) => {
+          const isActive = state.calcMetal === m.key;
+          return `
+            <button type="button" class="metal-select-btn ${isActive ? 'active' : ''} ${m.type === 'silver' ? 'is-silver' : ''}" data-metal="${m.key}">
+              <strong>${m.name}</strong>
+              <span class="tabular">${formatINR(state.rates[m.key])} / g</span>
+            </button>
+          `;
+        }).join('');
+
+        grid.querySelectorAll('.metal-select-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            state.calcMetal = btn.dataset.metal;
+            renderCalculatorTab();
+          });
+        });
+
+        updateCalculatorOutput();
+      }
+
+      function updateCalculatorOutput() {
+        const metalObj = METALS_META.find((m) => m.key === state.calcMetal) || METALS_META[0];
+        const ratePerGram = state.rates[state.calcMetal];
+        const weight = Math.max(0, parseFloat(state.calcWeight) || 0);
+        const makingVal = Math.max(0, parseFloat(state.calcMakingValue) || 0);
+
+        const baseValue = ratePerGram * weight;
+        const makingTotal = state.calcMakingMode === 'percent'
+          ? baseValue * (makingVal / 100)
+          : makingVal * weight;
+
+        const subtotal = baseValue + makingTotal;
+        const gstAmount = state.calcIncludeGst ? subtotal * 0.03 : 0;
+        const grandTotal = subtotal + gstAmount;
+
+        document.getElementById('calcActiveRateBadge').textContent = `${formatINR(ratePerGram)} / g`;
+        document.getElementById('calcWeightHint').textContent = `${weight.toFixed(weight % 1 === 0 ? 0 : 2)} g`;
+        document.getElementById('invoiceMetalTag').textContent = `${metalObj.name} • ${weight}g`;
+
+        document.getElementById('invoiceBaseLabel').textContent = `Base Value (${weight}g × ${formatINR(ratePerGram)})`;
+        document.getElementById('invoiceBaseVal').textContent = formatINR(baseValue);
+
+        document.getElementById('invoiceMakingLabel').textContent = state.calcMakingMode === 'percent'
+          ? `Making Charges (${makingVal}%)`
+          : `Making Charges (${formatINR(makingVal)}/g)`;
+        document.getElementById('invoiceMakingVal').textContent = formatINR(makingTotal);
+
+        document.getElementById('invoiceGstLabel').textContent = state.calcIncludeGst ? 'GST (3%)' : 'GST (Excluded)';
+        document.getElementById('invoiceGstVal').textContent = formatINR(gstAmount);
+        document.getElementById('invoiceGrandTotal').textContent = formatINR(grandTotal);
+      }
+
+      function copyEstimateQuote() {
+        const metalObj = METALS_META.find((m) => m.key === state.calcMetal) || METALS_META[0];
+        const quote = [
+          `${state.appName} (${state.cityName})`,
+          `Estimate: ${metalObj.name} — ${state.calcWeight}g`,
+          `Base Value: ${document.getElementById('invoiceBaseVal').textContent}`,
+          `${document.getElementById('invoiceMakingLabel').textContent}: ${document.getElementById('invoiceMakingVal').textContent}`,
+          `${document.getElementById('invoiceGstLabel').textContent}: ${document.getElementById('invoiceGstVal').textContent}`,
+          `Grand Total: ${document.getElementById('invoiceGrandTotal').textContent}`
+        ].join('\n');
+
+        try {
+          const tempArea = document.createElement('textarea');
+          tempArea.value = quote;
+          tempArea.style.position = 'fixed';
+          tempArea.style.opacity = '0';
+          document.body.appendChild(tempArea);
+          tempArea.select();
+          document.execCommand('copy');
+          document.body.removeChild(tempArea);
+          showToast('Estimate quote copied to clipboard!', 'success');
+        } catch (err) {
+          showToast('Could not copy quote on this device.', 'error');
+        }
+      }
+
+      /* ----------------------------------------------------------------------
+         8. RENDER: TRENDS TAB (Pure Offline Responsive SVG Chart)
+         ---------------------------------------------------------------------- */
+      function renderTrendsTab() {
+        const key = state.trendKey;
+        const values = HISTORICAL_DATA[key];
+        const dates = HISTORICAL_DATA.dates;
+        const isSilver = key === 'silverKg';
+
+        // Update active tab styling
+        document.querySelectorAll('.trend-tab-btn').forEach((btn) => {
+          const active = btn.dataset.trend === key;
+          btn.classList.toggle('active', active);
+          btn.classList.toggle('silver-tab', active && isSilver);
+        });
+
+        // Summary Stats
+        const maxVal = Math.max(...values);
+        const minVal = Math.min(...values);
+        const netDelta = values[values.length - 1] - values[0];
+        const netPct = ((netDelta / values[0]) * 100).toFixed(1);
+
+        document.getElementById('trendHighVal').textContent = formatINR(maxVal);
+        document.getElementById('trendLowVal').textContent = formatINR(minVal);
+        const netEl = document.getElementById('trendNetChange');
+        netEl.textContent = `${netDelta >= 0 ? '+' : ''}${netPct}%`;
+        netEl.style.color = netDelta >= 0 ? 'var(--green)' : '#FCA5A5';
+
+        // Chart card border theme
+        const chartCard = document.getElementById('trendChartCard');
+        chartCard.style.borderColor = isSilver ? 'var(--border-silver)' : 'var(--border-gold)';
+
+        renderSvgChart(dates, values, isSilver);
+        updateChartReadout(state.selectedTrendIndex);
+        renderHistoryTable(dates, values);
+      }
+
+      function renderSvgChart(dates, values, isSilver) {
+        const container = document.getElementById('svgChartContainer');
+        const W = 380;
+        const H = 195;
+        const padL = 52;
+        const padR = 14;
+        const padT = 18;
+        const padB = 28;
+        const plotW = W - padL - padR;
+        const plotH = H - padT - padB;
+
+        const minVal = Math.min(...values);
+        const maxVal = Math.max(...values);
+        const range = (maxVal - minVal) || 1;
+        const yMin = minVal - range * 0.14;
+        const yMax = maxVal + range * 0.14;
+        const ySpan = yMax - yMin;
+
+        const strokeColor = isSilver ? '#CBD5E1' : '#F5D77F';
+        const gradId = isSilver ? 'silverAreaGrad' : 'goldAreaGrad';
+
+        const points = values.map((v, i) => {
+          const x = padL + (i / (values.length - 1)) * plotW;
+          const y = padT + (1 - (v - yMin) / ySpan) * plotH;
+          return { x, y, v, d: dates[i], i };
+        });
+
+        const linePath = points.map((p, i) => `${i === 0 ? 'M' : 'L'}${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' ');
+        const areaPath = `${linePath} L${points[points.length - 1].x.toFixed(1)},${(padT + plotH).toFixed(1)} L${points[0].x.toFixed(1)},${(padT + plotH).toFixed(1)} Z`;
+
+        // 4 Horizontal Gridlines
+        let gridSvg = '';
+        for (let step = 0; step <= 3; step++) {
+          const frac = step / 3;
+          const y = padT + frac * plotH;
+          const labelVal = yMax - frac * ySpan;
+          const shortLabel = labelVal >= 100000
+            ? (labelVal / 1000).toFixed(0) + 'k'
+            : inrFormatter.format(Math.round(labelVal));
+          gridSvg += `
+            <line x1="${padL}" y1="${y.toFixed(1)}" x2="${W - padR}" y2="${y.toFixed(1)}" stroke="rgba(255,255,255,0.07)" stroke-dasharray="3 3" />
+            <text x="${padL - 7}" y="${(y + 4).toFixed(1)}" fill="#71717A" font-size="10" text-anchor="end">${shortLabel}</text>
+          `;
+        }
+
+        // X-axis Labels (show 1st, 4th, 7th, 10th to avoid crowding)
+        const xTicks = [0, 3, 6, 9];
+        const xAxisSvg = xTicks.map((idx) => `
+          <text x="${points[idx].x.toFixed(1)}" y="${H - 6}" fill="#71717A" font-size="10" text-anchor="middle">${dates[idx]}</text>
+        `).join('');
+
+        // Interactive Data Dots
+        const dotsSvg = points.map((p) => {
+          const isSelected = p.i === state.selectedTrendIndex;
+          return `
+            <g class="chart-point" data-idx="${p.i}" style="cursor:pointer;">
+              <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="14" fill="transparent" />
+              ${isSelected ? `<line x1="${p.x.toFixed(1)}" y1="${padT}" x2="${p.x.toFixed(1)}" y2="${padT + plotH}" stroke="${strokeColor}" stroke-opacity="0.35" stroke-dasharray="3 3" />` : ''}
+              <circle cx="${p.x.toFixed(1)}" cy="${p.y.toFixed(1)}" r="${isSelected ? 5.5 : 3.2}" fill="${isSelected ? '#09090B' : strokeColor}" stroke="${strokeColor}" stroke-width="${isSelected ? 2.6 : 1.5}" />
+            </g>
+          `;
+        }).join('');
+
+        container.innerHTML = `
+          <svg viewBox="0 0 ${W} ${H}" id="trendSvg" role="img" aria-label="10-day bullion price trend chart">
+            <defs>
+              <linearGradient id="${gradId}" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="${strokeColor}" stop-opacity="0.30" />
+                <stop offset="100%" stop-color="${strokeColor}" stop-opacity="0.0" />
+              </linearGradient>
+            </defs>
+            ${gridSvg}
+            <path d="${areaPath}" fill="url(#${gradId})" />
+            <path d="${linePath}" fill="none" stroke="${strokeColor}" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" />
+            ${xAxisSvg}
+            ${dotsSvg}
+          </svg>
+        `;
+
+        // Click & Touch Inspection Handlers
+        const svgEl = document.getElementById('trendSvg');
+        function selectPointByClientX(clientX) {
+          const rect = svgEl.getBoundingClientRect();
+          const relX = ((clientX - rect.left) / rect.width) * W;
+          let closestIdx = 0;
+          let minDist = Infinity;
+          points.forEach((p) => {
+            const dist = Math.abs(p.x - relX);
+            if (dist < minDist) {
+              minDist = dist;
+              closestIdx = p.i;
+            }
+          });
+          if (closestIdx !== state.selectedTrendIndex) {
+            state.selectedTrendIndex = closestIdx;
+            renderSvgChart(dates, values, isSilver);
+            updateChartReadout(closestIdx);
+          }
+        }
+
+        svgEl.addEventListener('click', (e) => selectPointByClientX(e.clientX));
+        svgEl.addEventListener('touchstart', (e) => {
+          if (e.touches && e.touches[0]) selectPointByClientX(e.touches[0].clientX);
+        }, { passive: true });
+        svgEl.addEventListener('touchmove', (e) => {
+          if (e.touches && e.touches[0]) selectPointByClientX(e.touches[0].clientX);
+        }, { passive: true });
+      }
+
+      function updateChartReadout(idx) {
+        const values = HISTORICAL_DATA[state.trendKey];
+        const dates = HISTORICAL_DATA.dates;
+        const isSilver = state.trendKey === 'silverKg';
+        const val = values[idx];
+        const prev = idx > 0 ? values[idx - 1] : val;
+        const diff = val - prev;
+
+        const priceEl = document.getElementById('chartSelectedPrice');
+        priceEl.textContent = formatINR(val);
+        priceEl.style.color = isSilver ? 'var(--silver-light)' : 'var(--gold-light)';
+
+        document.getElementById('chartSelectedDate').textContent = `${dates[idx]} 2026`;
+
+        const deltaEl = document.getElementById('chartSelectedDelta');
+        if (idx === 0) {
+          deltaEl.textContent = 'Start of 10-day window';
+          deltaEl.style.color = 'var(--text-muted)';
+        } else if (diff > 0) {
+          deltaEl.textContent = `▲ +${formatINR(diff)} vs previous day`;
+          deltaEl.style.color = '#6EE7B7';
+        } else if (diff < 0) {
+          deltaEl.textContent = `▼ -${formatINR(Math.abs(diff))} vs previous day`;
+          deltaEl.style.color = '#FCA5A5';
+        } else {
+          deltaEl.textContent = '• Unchanged vs previous day';
+          deltaEl.style.color = 'var(--text-secondary)';
+        }
+      }
+
+      function renderHistoryTable(dates, values) {
+        const tbody = document.getElementById('historyTableBody');
+        // Display newest date first
+        const rows = [];
+        for (let i = dates.length - 1; i >= 0; i--) {
+          const val = values[i];
+          const prev = i > 0 ? values[i - 1] : val;
+          const diff = val - prev;
+
+          let diffHtml = '<span style="color: var(--text-muted);">—</span>';
+          if (i > 0) {
+            if (diff > 0) {
+              diffHtml = `<span style="color: #6EE7B7; font-weight: 700;">+${formatINR(diff)}</span>`;
+            } else if (diff < 0) {
+              diffHtml = `<span style="color: #FCA5A5; font-weight: 700;">-${formatINR(Math.abs(diff))}</span>`;
+            } else {
+              diffHtml = `<span style="color: var(--text-secondary);">₹0</span>`;
+            }
+          }
+
+          rows.push(`
+            <tr>
+              <td style="color: var(--text-secondary); font-weight: 600;">${dates[i]} 2026</td>
+              <td class="tabular" style="font-weight: 700; color: var(--text-primary);">${formatINR(val)}</td>
+              <td class="tabular">${diffHtml}</td>
+            </tr>
+          `);
+        }
+        tbody.innerHTML = rows.join('');
+      }
+
+      /* ----------------------------------------------------------------------
+         9. SETTINGS TAB (Custom Dealer Mode + LocalStorage)
+         ---------------------------------------------------------------------- */
+      function populateSettingsForm() {
+        document.getElementById('setAppName').value = state.appName;
+        document.getElementById('setCityName').value = state.cityName;
+        document.getElementById('setGold24').value = state.rates.gold24;
+        document.getElementById('setGold22').value = state.rates.gold22;
+        document.getElementById('setGold18').value = state.rates.gold18;
+        document.getElementById('setSilver').value = state.rates.silver;
+      }
+
+      function saveCustomSettings() {
+        const appName = (document.getElementById('setAppName').value || '').trim() || DEFAULT_BASELINE.appName;
+        const cityName = (document.getElementById('setCityName').value || '').trim() || DEFAULT_BASELINE.cityName;
+        const g24 = parseFloat(document.getElementById('setGold24').value);
+        const g22 = parseFloat(document.getElementById('setGold22').value);
+        const g18 = parseFloat(document.getElementById('setGold18').value);
+        const ag = parseFloat(document.getElementById('setSilver').value);
+
+        if (!(g24 > 0) || !(g22 > 0) || !(g18 > 0) || !(ag > 0)) {
+          showToast('Please enter valid positive numbers for all metal rates.', 'error');
+          return;
+        }
+
+        state.appName = appName;
+        state.cityName = cityName;
+        state.rates = { gold24: g24, gold22: g22, gold18: g18, silver: ag };
+        state.changes = {
+          gold24: Math.round(g24 - HISTORICAL_DATA.gold24[8]),
+          gold22: Math.round(g22 - HISTORICAL_DATA.gold22[8]),
+          gold18: Math.round(g18 - Math.round(HISTORICAL_DATA.gold24[8] * 0.75)),
+          silver: Math.round(ag - (HISTORICAL_DATA.silverKg[8] / 1000))
+        };
+        state.sourceLabel = 'Custom Dealer Rates';
+        state.updatedLabel = 'Saved locally on device';
+
+        persistState();
+        renderHeader();
+        renderRatesTab();
+        renderCalculatorTab();
+        showToast('Custom store rates & branding saved!', 'success');
+      }
+
+      function resetToMarketRates() {
+        try {
+          localStorage.removeItem(STORAGE_KEY);
+        } catch (err) {
+          console.warn(err);
+        }
+        state.appName = DEFAULT_BASELINE.appName;
+        state.cityName = DEFAULT_BASELINE.cityName;
+        state.sourceLabel = DEFAULT_BASELINE.sourceLabel;
+        state.updatedLabel = DEFAULT_BASELINE.updatedLabel;
+        state.rates = { ...DEFAULT_BASELINE.rates };
+        state.changes = { ...DEFAULT_BASELINE.changes };
+
+        populateSettingsForm();
+        renderHeader();
+        renderRatesTab();
+        renderCalculatorTab();
+        showToast('Restored default Cuttack market rates.', 'info');
+      }
+
+      /* ----------------------------------------------------------------------
+         10. EVENT BINDINGS & BOOTSTRAP
+         ---------------------------------------------------------------------- */
+      function bindEvents() {
+        // Bottom Navigation
+        document.querySelectorAll('.nav-item').forEach((btn) => {
+          btn.addEventListener('click', () => switchTab(btn.dataset.tab));
+        });
+
+        // Header Refresh & Live Spot Button
+        document.getElementById('headerRefreshBtn').addEventListener('click', fetchLiveSpotPrices);
+        document.getElementById('fetchSpotBtn').addEventListener('click', fetchLiveSpotPrices);
+
+        // Rates Weight Pills
+        document.querySelectorAll('#weightPills .pill-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            state.goldUnit = Number(btn.dataset.unit);
+            document.querySelectorAll('#weightPills .pill-btn').forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+            renderRatesTab();
+          });
+        });
+
+        // Rates GST Toggle
+        document.getElementById('ratesGstToggle').addEventListener('change', (e) => {
+          state.ratesIncludeGst = e.target.checked;
+          renderRatesTab();
+        });
+
+        // Calculator Weight Input & Preset Chips
+        const weightInput = document.getElementById('calcWeightInput');
+        weightInput.addEventListener('input', (e) => {
+          state.calcWeight = e.target.value;
+          document.querySelectorAll('#weightPresetChips .chip-btn').forEach((c) => {
+            c.classList.toggle('active', Number(c.dataset.weight) === Number(state.calcWeight));
+          });
+          updateCalculatorOutput();
+        });
+
+        document.querySelectorAll('#weightPresetChips .chip-btn').forEach((chip) => {
+          chip.addEventListener('click', () => {
+            const w = Number(chip.dataset.weight);
+            state.calcWeight = w;
+            weightInput.value = w;
+            document.querySelectorAll('#weightPresetChips .chip-btn').forEach((c) => c.classList.remove('active'));
+            chip.classList.add('active');
+            updateCalculatorOutput();
+          });
+        });
+
+        // Calculator Making Charges Mode & Slider
+        const makingInput = document.getElementById('calcMakingInput');
+        const makingSlider = document.getElementById('calcMakingSlider');
+
+        document.querySelectorAll('#makingModeToggle button').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            state.calcMakingMode = btn.dataset.mode;
+            document.querySelectorAll('#makingModeToggle button').forEach((b) => b.classList.remove('active'));
+            btn.classList.add('active');
+
+            if (state.calcMakingMode === 'percent') {
+              makingSlider.max = 35;
+              makingSlider.step = 0.5;
+              state.calcMakingValue = 10;
+            } else {
+              makingSlider.max = 2500;
+              makingSlider.step = 50;
+              state.calcMakingValue = 650;
+            }
+            makingInput.value = state.calcMakingValue;
+            makingSlider.value = state.calcMakingValue;
+            updateCalculatorOutput();
+          });
+        });
+
+        makingInput.addEventListener('input', (e) => {
+          state.calcMakingValue = e.target.value;
+          makingSlider.value = Math.min(Number(makingSlider.max), Math.max(0, Number(e.target.value) || 0));
+          updateCalculatorOutput();
+        });
+
+        makingSlider.addEventListener('input', (e) => {
+          state.calcMakingValue = e.target.value;
+          makingInput.value = e.target.value;
+          updateCalculatorOutput();
+        });
+
+        // Calculator GST Toggle & Copy Button
+        document.getElementById('calcGstToggle').addEventListener('change', (e) => {
+          state.calcIncludeGst = e.target.checked;
+          updateCalculatorOutput();
+        });
+        document.getElementById('copyEstimateBtn').addEventListener('click', copyEstimateQuote);
+
+        // Trends Metal Tabs
+        document.querySelectorAll('#trendMetalTabs .trend-tab-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            state.trendKey = btn.dataset.trend;
+            state.selectedTrendIndex = HISTORICAL_DATA.dates.length - 1;
+            renderTrendsTab();
+          });
+        });
+
+        // Settings Buttons
+        document.getElementById('saveSettingsBtn').addEventListener('click', saveCustomSettings);
+        document.getElementById('resetSettingsBtn').addEventListener('click', resetToMarketRates);
+      }
+
+      // Initialize App
+      loadSavedState();
+      bindEvents();
+      renderRatesTab();
+      renderCalculatorTab();
+      renderTrendsTab();
+      populateSettingsForm();
+    })();
+  </script>
+</body>
+</html>
